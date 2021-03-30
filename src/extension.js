@@ -12,7 +12,7 @@ function activate(context) {
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "vscode-plugin-test" is now active!');
+	console.log('恭喜，您的扩展“vscode-plugin-test”已被激活！');
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with  registerCommand
@@ -28,8 +28,9 @@ function activate(context) {
 }
 
 // this method is called when your extension is deactivated
-function deactivate() {}
-
+function deactivate() {
+	console.log('您的扩展“vscode-plugin-demo”已被释放！')
+};
 module.exports = {
 	activate,
 	deactivate
