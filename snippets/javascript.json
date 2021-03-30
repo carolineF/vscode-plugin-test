@@ -1,0 +1,30 @@
+{
+	"for循环": {
+    "scope":"javascript,typescript,vue,react",
+		"prefix": "for",
+		"body": [
+		  "for (const ${2:item} of ${1:array}) {",
+		  "\t$0",
+		  "}"
+		],
+		"description": "for循环"
+	},
+  "ajax": {
+    "scope":"javascript,typescript,vue,react",
+		"prefix": "ajax",
+		"body": [
+			"$.ajax({",
+			" url: '$1',",
+			" method: '${2:POST}',",
+			" datatype: 'json',",
+			" success: data => {",
+			"   $3;",
+			" },",
+			" error: err => {",
+			"   $4;",
+			" }",
+			"})"
+		],
+		"description": "ajax模块"
+	}
+}

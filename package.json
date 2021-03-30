@@ -10,7 +10,8 @@
 		"Other"
 	],
 	"activationEvents": [
-        "onCommand:vscode-plugin-test.helloWorld"
+        "onCommand:vscode-plugin-test.helloWorld",
+				"onLanguage:json"
 	],
 	"main": "./src/extension.js",
 	"contributes": {
@@ -18,7 +19,34 @@
             "command": "vscode-plugin-test.helloWorld",
             "title": "Hello World"
 
-		}]
+		}],
+		"keybindings": [
+			{
+				"command": "vscode-plugin-test.helloWorld",
+				"key": "ctr+f10",
+				"mac": "cmd+f10",
+				"when": "editorTextFocus"
+			}
+		],
+		"menus": {
+			"editor/context": [
+				{
+					"when": "editorTextFocus",
+					"command": "vscode-plugin-test.helloWorld",
+					"group": "navigation"
+				}
+			],
+			"editor/title": [],
+			"editor/title/context": [],
+			"explorer/context": []
+		},
+		"snippets": [
+			{
+					"language": "javascript",
+					"path": "./snippets/javascript.json"
+			}
+		],
+		"viewsContainers": {}
 	},
 	"scripts": {
 		"lint": "eslint .",
