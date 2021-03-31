@@ -10,11 +10,26 @@
 		"Other"
 	],
 	"activationEvents": [
-        "onCommand:vscode-plugin-test.helloWorld",
-				"onLanguage:json"
+				"*"
 	],
 	"main": "./src/extension.js",
 	"contributes": {
+		"configuration": {
+			"type": "object",
+			"title": "Code 插件 demo",
+			"properties": {
+				"vscodePluginDemo.yourName": {
+					"type": "string",
+					"default": "guest",
+					"description": "你的名字"
+				},
+				"vscodePluginDemo.showTip": {
+					"type": "boolean",
+					"default": false,
+					"description": "启动时显示自定义欢迎页"
+				}
+			}
+		},
 		"commands": [{
             "command": "vscode-plugin-test.helloWorld",
             "title": "Hello World"

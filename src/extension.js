@@ -15,6 +15,7 @@ function activate(context) {
 	console.log('恭喜，您的扩展“vscode-plugin-test”已被激活！');
 
 	require('./go-definition')(context);
+	require('./welcome')(context);
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with  registerCommand
