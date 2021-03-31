@@ -16,6 +16,7 @@ function activate(context) {
 
 	require('./go-definition')(context);
 	require('./welcome')(context);
+	require('./open-devui')(context);
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with  registerCommand
