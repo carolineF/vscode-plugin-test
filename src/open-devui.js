@@ -70,39 +70,41 @@ const messageHandler = {
 };
 
 const cats = {
-  "Coding Cat": "https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif",
-  "Compiling Cat": "https://media.giphy.com/media/mlvseq9yvZhba/giphy.gif",
+  'Coding Cat': 'https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif',
+  'Compiling Cat': 'https://media.giphy.com/media/mlvseq9yvZhba/giphy.gif',
+  'Testing Cat': 'https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif'
 };
 
 module.exports = function (context) {
-  let currentPanel = undefined;
   context.subscriptions.push(
     vscode.commands.registerCommand(
       "vscode-plugin-test.openDevUI",
       function (uri) {
-        const columnToShowIn = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.viewColumn : undefined;
-        if(currentPanel) {
-          currentPanel.reveal(columnToShowIn);
-        } else {
           const panel = vscode.window.createWebviewPanel(
             "catCoding",
             "Cat Coding",
             vscode.ViewColumn.One,
             {}
           );
-          let iteration = 0;
-          const updateWebview = () => {
-            const cat = iteration++ %2 ? "Compiling Cat" : "Coding Cat"
-            panel.title = cat;
-            panel.webview.html = getWebViewHtml(cat);
-          }
-          updateWebview();
-          const intervel = setInterval(updateWebview, 1000)
-          panel.onDidDispose(() => {
-            clearInterval(intervel)
-          },null,
-          context.subscriptionns)
-        }
+          panel.webview.html = getWebViewHtml(cats['Coding Cat']);
+          panel.onDidChangeViewState(
+            e => {
+              const pannel = e.webviewPanel;
+              switch (pannel.viewColumn) {
+                case vscode.ViewColumn.One:
+                  updateWebviewForCat(pannel, 'Coding Cat')
+                  return;
+                case vscode.ViewColumn.Two:
+                  updateWebviewForCat(pannel, 'Compiling Cat')
+                  return;
+                case vscode.ViewColumn.Three:
+                  updateWebviewForCat(pannel, 'Testing Cat')
+                  return;
+              }
+            },
+            null,
+            context.subscriptions
+          )
         // const panel = vscode.window.createWebviewPanel(
         //     'testWelcome', // viewType
         //     "自定义欢迎页", // 视图标题
@@ -131,6 +133,11 @@ module.exports = function (context) {
   }
 };
 
+function updateWebviewForCat(pannel, catName) {
+  pannel.title = catName;
+  pannel.webview.html = getWebViewHtml(cats[catName])
+}
+
 function getWebViewHtml(cat) {
   return ` <!DOCTYPE html>
   <html lang="en">
@@ -140,7 +147,7 @@ function getWebViewHtml(cat) {
       <title>Cat Coding</title>
   </head>
   <body>
-      <img src="${cats[cat]}" width="300" />
+      <img src="${cat}" width="300" />
   </body>
   </html>`;
 }
