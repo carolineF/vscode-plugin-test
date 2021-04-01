@@ -86,25 +86,13 @@ module.exports = function (context) {
             vscode.ViewColumn.One,
             {}
           );
-          panel.webview.html = getWebViewHtml(cats['Coding Cat']);
-          panel.onDidChangeViewState(
-            e => {
-              const pannel = e.webviewPanel;
-              switch (pannel.viewColumn) {
-                case vscode.ViewColumn.One:
-                  updateWebviewForCat(pannel, 'Coding Cat')
-                  return;
-                case vscode.ViewColumn.Two:
-                  updateWebviewForCat(pannel, 'Compiling Cat')
-                  return;
-                case vscode.ViewColumn.Three:
-                  updateWebviewForCat(pannel, 'Testing Cat')
-                  return;
-              }
-            },
-            null,
-            context.subscriptions
+          //获取磁盘上的资源路径
+          const onDiskPath = vscode.Uri.file(
+            path.join(context.extensionPath, 'media', 'giphy.webp')
           )
+          //获取在 webview中使用的特殊 URI
+          const catGifSrc = onDiskPath.with({scheme: 'vscode-resource'})
+          panel.webview.html = getWebViewHtml(catGifSrc)
         // const panel = vscode.window.createWebviewPanel(
         //     'testWelcome', // viewType
         //     "自定义欢迎页", // 视图标题
