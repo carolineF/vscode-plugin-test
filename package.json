@@ -38,7 +38,11 @@
       {
         "command": "vscode-plugin-test.openDevUI",
         "title": "打开 DevUI"
-      }
+      },
+			{
+				"command": "catCodinng.Refator",
+				"title": "cat Coding"
+			}
     ],
     "keybindings": [
       {

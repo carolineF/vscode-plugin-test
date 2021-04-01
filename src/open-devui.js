@@ -76,11 +76,15 @@ const cats = {
 };
 
 module.exports = function (context) {
+  let currentPannel = undefined;
   context.subscriptions.push(
     vscode.commands.registerCommand(
       "vscode-plugin-test.openDevUI",
       function (uri) {
-          const panel = vscode.window.createWebviewPanel(
+        if(currentPannel) {
+          currentPannel.reveal(vscode.ViewColumn.One)
+        }else {
+          currentPannel = vscode.window.createWebviewPanel(
             "catCoding",
             "Cat Coding",
             vscode.ViewColumn.One,
@@ -90,7 +94,9 @@ module.exports = function (context) {
             }
           );
         
-          panel.webview.html = getWebViewHtml()
+          currentPannel.webview.html = getWebViewHtml()
+          currentPannel.onDidDispose(() => { currentPannel = undefined; }, undefined, context.subscriptions);
+        }
         // const panel = vscode.window.createWebviewPanel(
         //     'testWelcome', // viewType
         //     "自定义欢迎页", // 视图标题
@@ -111,6 +117,14 @@ module.exports = function (context) {
       }
     )
   );
+
+  context.subscriptions.push(vscode.commands.registerCommand('catCodinng.Refator', () => {
+    if(!currentPannel) {
+      return 
+    }
+
+    currentPannel.webview.postMessage({commands: 'refator'})
+  }))
 
   const key = "vscodePluginDemo.showTip";
   // 如果设置里面开启了欢迎页显示，启动欢迎页
@@ -142,6 +156,16 @@ function getWebViewHtml() {
         setInterval(() => {
           counter.textContent = count++;
         }, 100)
+
+        window.addEventListener('message', event => {
+          const message = event.data;
+          switch(message.commands) {
+            case 'refator': 
+              count = Math.ceil(count * 0.5)
+              counter.textContent = count;
+              return;
+          }
+        })
       </script>
   </body>
   </html>`;
