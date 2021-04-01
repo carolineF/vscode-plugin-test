@@ -84,7 +84,9 @@ module.exports = function (context) {
             "catCoding",
             "Cat Coding",
             vscode.ViewColumn.One,
-            {}
+            {
+              localResourceRoots: [vscode.Uri.file(path.join(context.extensionPath, 'media'))]
+            }
           );
           //获取磁盘上的资源路径
           const onDiskPath = vscode.Uri.file(
