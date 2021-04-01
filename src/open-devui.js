@@ -85,16 +85,12 @@ module.exports = function (context) {
             "Cat Coding",
             vscode.ViewColumn.One,
             {
-              localResourceRoots: [vscode.Uri.file(path.join(context.extensionPath, 'media'))]
+              // 在webview中启用脚本
+              enableScripts: true
             }
           );
-          //获取磁盘上的资源路径
-          const onDiskPath = vscode.Uri.file(
-            path.join(context.extensionPath, 'media', 'giphy.webp')
-          )
-          //获取在 webview中使用的特殊 URI
-          const catGifSrc = onDiskPath.with({scheme: 'vscode-resource'})
-          panel.webview.html = getWebViewHtml(catGifSrc)
+        
+          panel.webview.html = getWebViewHtml()
         // const panel = vscode.window.createWebviewPanel(
         //     'testWelcome', // viewType
         //     "自定义欢迎页", // 视图标题
@@ -128,7 +124,7 @@ function updateWebviewForCat(pannel, catName) {
   pannel.webview.html = getWebViewHtml(cats[catName])
 }
 
-function getWebViewHtml(cat) {
+function getWebViewHtml() {
   return ` <!DOCTYPE html>
   <html lang="en">
   <head>
@@ -137,7 +133,16 @@ function getWebViewHtml(cat) {
       <title>Cat Coding</title>
   </head>
   <body>
-      <img src="${cat}" width="300" />
+      <img src="${cats['Coding Cat']}" width="300" />
+      <h1 id="lines-of-code-counter">0</h1>
+
+      <script>
+        const counter =  document.getElementById('lines-of-code-counter');
+        let count = 0;
+        setInterval(() => {
+          counter.textContent = count++;
+        }, 100)
+      </script>
   </body>
   </html>`;
 }
