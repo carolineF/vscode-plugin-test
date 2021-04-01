@@ -76,15 +76,11 @@ const cats = {
 };
 
 module.exports = function (context) {
-  let currentPannel = undefined;
   context.subscriptions.push(
     vscode.commands.registerCommand(
       "vscode-plugin-test.openDevUI",
       function (uri) {
-        if(currentPannel) {
-          currentPannel.reveal(vscode.ViewColumn.One)
-        }else {
-          currentPannel = vscode.window.createWebviewPanel(
+          let panel = vscode.window.createWebviewPanel(
             "catCoding",
             "Cat Coding",
             vscode.ViewColumn.One,
@@ -93,10 +89,15 @@ module.exports = function (context) {
               enableScripts: true
             }
           );
-        
-          currentPannel.webview.html = getWebViewHtml()
-          currentPannel.onDidDispose(() => { currentPannel = undefined; }, undefined, context.subscriptions);
-        }
+        panel.webview.html = getWebViewHtml();
+
+        panel.webview.onDidReceiveMessage(message => {
+          switch (message.commands) {
+            case 'alert':
+              vscode.window.showErrorMessage(message.text)
+              return;
+          }
+        }, undefined, context.subscriptions)
         // const panel = vscode.window.createWebviewPanel(
         //     'testWelcome', // viewType
         //     "自定义欢迎页", // 视图标题
@@ -118,25 +119,12 @@ module.exports = function (context) {
     )
   );
 
-  context.subscriptions.push(vscode.commands.registerCommand('catCodinng.Refator', () => {
-    if(!currentPannel) {
-      return 
-    }
-
-    currentPannel.webview.postMessage({commands: 'refator'})
-  }))
-
   const key = "vscodePluginDemo.showTip";
   // 如果设置里面开启了欢迎页显示，启动欢迎页
   if (vscode.workspace.getConfiguration().get(key)) {
     vscode.commands.executeCommand("extension.demo.showWelcome");
   }
 };
-
-function updateWebviewForCat(pannel, catName) {
-  pannel.title = catName;
-  pannel.webview.html = getWebViewHtml(cats[catName])
-}
 
 function getWebViewHtml() {
   return ` <!DOCTYPE html>
@@ -151,21 +139,21 @@ function getWebViewHtml() {
       <h1 id="lines-of-code-counter">0</h1>
 
       <script>
+        const vscode = acquireVsCodeApi();
         const counter =  document.getElementById('lines-of-code-counter');
         let count = 0;
         setInterval(() => {
           counter.textContent = count++;
+
+          if(Math.random() < 0.001 * count) {
+            console.log('-----')
+            vscode.postMessage({
+              commands: 'alert',
+              text: "🐛  on line " + count
+            })
+          }
         }, 100)
 
-        window.addEventListener('message', event => {
-          const message = event.data;
-          switch(message.commands) {
-            case 'refator': 
-              count = Math.ceil(count * 0.5)
-              counter.textContent = count;
-              return;
-          }
-        })
       </script>
   </body>
   </html>`;
